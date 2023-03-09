@@ -118,6 +118,7 @@ class Game:
         text, text_rect = text_utils.get_score_element(self.points)
         self.screen.blit(text, text_rect)
         self.player.check_invincibility(self.screen)
+        self.player.check_hammer(self.screen)
 
     def create_components(self):
         self.obstacle_manager.reset_obstacles()
