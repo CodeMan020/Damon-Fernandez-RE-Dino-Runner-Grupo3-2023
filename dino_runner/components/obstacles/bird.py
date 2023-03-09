@@ -6,8 +6,9 @@ class Bird(Obstacle):
     def __init__(self,image):
         self.type = 0
         super().__init__(image, self.type)
-        self.rect.y = random.randint(230, 350)
+        self.rect.y = random.randint(230, 330)
         self.flutters_index = 0
+
 
     def draw(self,screen):
         if self.flutters_index <= 5:

@@ -1,7 +1,8 @@
 import pygame 
 from dino_runner.components.dino import Dino
-from dino_runner.utils.constants import BG, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS, DINO_START
+from dino_runner.utils.constants import BG, ICON, SCREEN_HEIGHT, SCREEN_WIDTH, TITLE, FPS, DINO_START, DINO_DEAD
 from dino_runner.components.obstacles.obstaclemanager import ObstacleManager
+from dino_runner.components.power_ups.power_up_manager import PowerUpManager
 from dino_runner.components import text_utils
 
 class Game:
@@ -20,14 +21,15 @@ class Game:
         self.points = 0
         self.running = True
         self.death_count = 0
-        self.menu = True
+        self.power_up_manager = PowerUpManager()
 
 
     def run(self):
-        if self.menu:
-            self.show_menu()
-        # Game loop: events - update - draw
+        self.create_components()
         self.playing = True
+        self.game_speed = 20
+        self.points = 0
+        # Game loop: events - update - draw
         while self.playing:
             self.events()
             self.update()
@@ -42,13 +44,16 @@ class Game:
         user_input = pygame.key.get_pressed()
         self.player.update(user_input)
         self.obstacle_manager.update(self)
+        self.power_up_manager.update(self.points, self.game_speed, self.player, self)
 
     def draw(self):
+        self.score()
         self.clock.tick(FPS)
         self.screen.fill((255, 255, 255))
         self.draw_background()
         self.player.draw(self.screen)
         self.obstacle_manager.draw(self.screen)
+        self.power_up_manager.draw(self.screen)
         self.score()
         pygame.display.update()
         pygame.display.flip()
@@ -77,15 +82,22 @@ class Game:
         self.handle_key_events_on_menu()
 
     def print_menu_elements(self):
+        half_screen_height = SCREEN_HEIGHT // 2
+        half_screen_width = SCREEN_WIDTH // 2
         if self.death_count == 0:
             text, text_rect = text_utils.get_centered_message('Press any key to start')
             self.screen.blit(text, text_rect)
         #TAREA POSIBLE: puntaje con el que terminaste y contador de muertes poner en texto
         else:
-            self.stats_game()
+            pygame.time.delay(350)
+            text, text_rect = text_utils.get_centered_message('Press any Key to Restart')
+            score, score_rect = text_utils.get_centered_message('Your Score: ' + str(self.points), height = half_screen_height + 50)
+            death, death_rect = text_utils.get_centered_message('Death count: ' + str(self.death_count), height = half_screen_height + 100)
+            self.screen.blit(score, score_rect)
+            self.screen.blit(text, text_rect)
+            self.screen.blit(death, death_rect)
 
-
-        self.screen.blit(DINO_START, (50, 300))
+        self.screen.blit(DINO_START, (100, 300))
 
 
     def handle_key_events_on_menu(self):
@@ -97,11 +109,7 @@ class Game:
                 pygame.quit()
                 exit()
             if event.type == pygame.KEYDOWN:
-                self.points = 0
-                self.playing = True
                 self.run()
-                pygame.time.delay(1000)
-                self.reset()
             
     def score(self):
         self.points += 1
@@ -109,22 +117,10 @@ class Game:
             self.game_speed += 1
         text, text_rect = text_utils.get_score_element(self.points)
         self.screen.blit(text, text_rect)
+        self.player.check_invincibility(self.screen)
 
-    def reset(self):
+    def create_components(self):
         self.obstacle_manager.reset_obstacles()
-        self.game_speed = 20
-        self.points = self.points
-        self.death_count += 1
-        
+        self.power_up_manager.reset_power_ups(self.points)
 
-    def stats_game(self):
-        text, text_rect = text_utils.get_centered_message('Press any key to start')
-        self.screen.blit(text, text_rect)
-        text, text_rect = text_utils.get_score_element(self.points)
-        self.screen.blit(text, text_rect)
-        text, text_rect = text_utils.get_death_count(self.death_count)
-        self.screen.blit(text, text_rect) 
-
-
-
- #Tarea resetear la velocidad y el puntaje
+    
