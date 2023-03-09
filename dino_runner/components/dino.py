@@ -28,7 +28,6 @@ class Dino(Sprite):
     def setup_state_booleans(self):
         self.has_powerup = False
         self.shield = False
-        self.hammer = False
         self.show_text = False
         self.shield_time_up = 0
         self.hammer_time_up = 0
@@ -89,7 +88,7 @@ class Dino(Sprite):
             self.jump_vel = self.JUMP_VEL
 
     def check_invincibility(self, screen):
-        if self.shield or self.hammer:
+        if self.shield:
             time_to_show = round((self.shield_time_up - pygame.time.get_ticks())/ 1000 , 2)
             if time_to_show >= 0:
                 if self.show_text:
@@ -100,8 +99,7 @@ class Dino(Sprite):
                     screen.blit(text, textRect)
             else:
                 self.shield = False
-                self.hammer = False
-                self.update_to_default(SHIELD_TYPE, HAMMER_TYPE)
+                self.update_to_default(SHIELD_TYPE)
 
     def update_to_default(self, current_type):
         if self.type == current_type:
