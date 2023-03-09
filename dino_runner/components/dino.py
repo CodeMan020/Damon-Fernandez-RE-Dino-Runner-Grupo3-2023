@@ -29,7 +29,8 @@ class Dino(Sprite):
         self.has_powerup = False
         self.shield = False
         self.hammer = False
-        self.show_text = False
+        self.show_text_shield = False
+        self.show_text_hammer = False
         self.shield_time_up = 0
         self.hammer_time_up = 0
 
@@ -92,7 +93,7 @@ class Dino(Sprite):
         if self.shield:
             time_to_show = round((self.shield_time_up - pygame.time.get_ticks())/ 1000 , 2)
             if time_to_show >= 0:
-                if self.show_text:
+                if self.show_text_shield:
                     font = pygame.font.Font('freesansbold.ttf', 18)
                     text = font.render(f'Shield enabled for {time_to_show}',True, (0, 0, 0))
                     textRect = text.get_rect()
@@ -106,7 +107,7 @@ class Dino(Sprite):
         if self.hammer:
             time_to_show = round((self.hammer_time_up - pygame.time.get_ticks())/ 1000 , 2)
             if time_to_show >= 0:
-                if self.show_text:
+                if self.show_text_hammer:
                     font = pygame.font.Font('freesansbold.ttf', 18)
                     text = font.render(f'Hammer enabled for {time_to_show}',True, (0, 0, 0))
                     textRect = text.get_rect()
