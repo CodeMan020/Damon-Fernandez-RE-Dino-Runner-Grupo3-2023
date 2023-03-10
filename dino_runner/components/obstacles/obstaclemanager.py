@@ -21,7 +21,7 @@ class ObstacleManager:
         for obstacle in self.obstacles:
             obstacle.update(game.game_speed, self.obstacles)
             if game.player.dino_rect.colliderect(obstacle.rect):
-                if(game.player.hammer):
+                if game.player.hammer:
                     self.reset_obstacles()
                 if not (game.player.shield or game.player.hammer):
                     game.player.image = DINO_DEAD    

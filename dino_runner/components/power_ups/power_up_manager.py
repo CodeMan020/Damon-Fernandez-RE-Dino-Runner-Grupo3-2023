@@ -18,16 +18,14 @@ class PowerUpManager:
     
     def generate_power_ups (self, points, game):
         self.points = points
-        power_up_odd = random.randint(0, 1)
-        #print(self.when_appers)
+        power_up_ran = random.randint(0, 1)
         if (game.player.shield or game.player.hammer) == True and self.when_appers <= self.points:
             self.when_appers += 200
         if len(self.power_ups) == 0:
             if True:
-                #print("generating powerup")
-                if power_up_odd == 0:
+                if power_up_ran == 0:
                     self.power_ups.append(Shield())
-                if power_up_odd == 1:
+                if power_up_ran == 1:
                     self.power_ups.append(Hammer())
                 self.when_appers = random.randint(self.when_appers + 200, 500 + self.when_appers)
         return self.power_ups
@@ -39,7 +37,7 @@ class PowerUpManager:
             if player.dino_rect.colliderect(power_up.rect):
                 power_up.start_time = pygame.time.get_ticks()
                 print(power_up.type)
-                if(power_up.type == "shield"):
+                if power_up.type == "shield":
                     player.shield = True
                     player.show_text_shield = True
                     player.show_text_hammer = False
@@ -48,7 +46,7 @@ class PowerUpManager:
                     player.shield_time_up = power_up.start_time + (time_random * 1000)
                     player.hammer_time_up = 0
                     self.power_ups.remove(power_up)
-                if(power_up.type == "hammer"):
+                if power_up.type == "hammer":
                     player.hammer = True
                     player.show_text_shield = False
                     player.show_text_hammer = True
