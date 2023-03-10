@@ -22,7 +22,7 @@ class PowerUpManager:
         if (game.player.shield or game.player.hammer) == True and self.when_appers <= self.points:
             self.when_appers += 200
         if len(self.power_ups) == 0:
-            if True:
+            if self.when_appers <= self.points:
                 if power_up_ran == 0:
                     self.power_ups.append(Shield())
                 if power_up_ran == 1:
